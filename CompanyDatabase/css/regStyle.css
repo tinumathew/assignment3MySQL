@@ -1,0 +1,70 @@
+.error
+{
+    color: red;
+    border-color:red;
+}
+#content{
+    display: inline-block;
+    float: left;
+    margin-left: 310px;
+    background-color:blue;
+    color: white;
+    height: 460px;
+    padding-left: 20px;
+    font-size: 18px;  
+    padding-top: 10px;    
+}
+#left{
+    display: inline-block;
+    float:right;
+    margin-right: 100px;
+    font-size: 20px;
+    color: blue;
+}
+#submit
+{
+    width:120px;
+    height: 40px;
+    font-size: 20px;
+    color: aliceblue;
+    background-color:blue;
+    border-color: white;
+    margin-top: 60px;
+    margin-left: 90px;
+}
+h1
+{
+    color: blue;
+    font-size: 50px;
+}
+body
+{
+    background-image: url("CompanyDatabase/images/bgs.jpg");
+}
+a
+{
+    float: right;
+    margin-right: 50px;
+    font-size: 20px;
+}
+#data
+{
+    color:blue;
+    font-size: 20px;
+}
+#edit
+{
+     width:120px;
+    height: 40px;
+    font-size: 20px;
+    color: aliceblue;
+    background-color:blue;
+    border-color: white;
+    margin-top: 10px;
+    margin-left: 20px;
+}
+input{
+    color: blue;   
+    border-color: blue;
+}
+
