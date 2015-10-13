@@ -32,7 +32,8 @@
                 else {
                     $email = testData($_POST["email"]);
                     // validation for email id
-                    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                    $regex = "/^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/";
+                    if (!preg_match($regex,$email)) {
                         $emailError = "Invalid email format";
                     }
                     else

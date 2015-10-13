@@ -12,166 +12,155 @@
         $(document).ready(function(){
   
             $("#registrationForm").validate();
-        });
-         $(document).ready(function(){
-  
-            $("#editform").validate();
-        });
+        });         
         </script>
         <?php
             $companyNameError = $emailError =$formationDateError=$firstNameError =$lastNameError = $addressError = $cityError = $stateError = $zipcodeError =$companyIDError="";
-            $text=$companyID=$companyName= $email=$formationDate=$firstName = $lastName  = $address = $city=$state=$zipcode="";
-            if ($_SERVER["REQUEST_METHOD"] == "GET") {                                          
-                $servername="localhost";
-                $username="root";
-                $password="kollekatt";
-                $dbname="companyDB";
-                //create connection
-                $conn=  new mysqli($servername,$username,$password,$dbname);
-                //check connection
-                if($conn->connect_error) {
-                    die("Connection Failed:".$conn->connect_error);
-                }
-                //display details in the form
-                $editid=$_GET["id"];
-                $sql="SELECT * FROM company WHERE companyId='$editid'";
-                $result=$conn->query($sql);                
-                if($result->num_rows>0) {                        
-                    while ($row=$result->fetch_assoc()) {
-                        $companyID=$row['companyId'];
-                        $companyName=$row['name'];
-                        $email=$row['email'];
-                        $formationDate=$row['formation_on'];
-                        $firstName=$row['firstName'];
-                        $lastName=$row['lastName'];
-                        $address=$row['address'];
-                        $city=$row['city'];
-                        $state=$row['state'];
-                        $zipcode=$row['zip'];
-                    }
-                }                    
+            $text=$companyName= $email=$formationDate=$firstName = $lastName  = $address = $city=$state=$zipcode="";                                              
+            $servername="localhost";
+            $username="root";
+            $password="kollekatt";
+            $dbname="companyDB";
+            //create connection
+            $conn=  new mysqli($servername,$username,$password,$dbname);
+            //check connection
+            if($conn->connect_error) {
+                die("Connection Failed:".$conn->connect_error);
             }
-            //edit the details
-            if(isset($_GET["submit"])) {  
-                if (empty($_GET["companyID"])) {
-                    $companyIDError = "Company ID is required";
+            //display details in the form
+            $editid=$_GET["id"];
+            $sql="SELECT * FROM company WHERE companyId='$editid'";
+            $result=$conn->query($sql);                
+            if($result->num_rows>0) {                        
+                while ($row=$result->fetch_assoc()) {                   
+                    $companyName=$row['name'];
+                    $email=$row['email'];
+                    $formationDate=$row['formation_on'];
+                    $firstName=$row['firstName'];
+                    $lastName=$row['lastName'];
+                    $address=$row['address'];
+                    $city=$row['city'];
+                    $state=$row['state'];
+                    $zipcode=$row['zip'];
                 }
-                else {
-                    $companyID= testData($_GET["companyID"]);
-                    $companyIDError="";
-                }
+            }                  
+            if ($_SERVER["REQUEST_METHOD"] == "POST") {   
+                //edit the details
+                if(isset($_POST["submit"])) {                 
                 //check if company name is empty
-                if (empty($_GET["companyName"])) {
-                    $companyNameError = "Company Name is required";
-                }
-                else {   
-                    $companyName = testData($_GET["companyName"]);
-                    $companyNameError= "";
-                }
-                //check if email is empty
-                if (empty($_GET["email"])) {
-                    $emailError = "Email is required";
-                } 
-                else {
-                    $email = testData($_GET["email"]);
-                    // validation for email id
-                    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-                         $emailError = "Invalid email format";
+                    if (empty($_POST["companyName"])) {
+                        $companyNameError = "Company Name is required";
                     }
-                    else
-                    {
-                        $emailError = "";
+                    else {   
+                        $companyName = testData($_POST["companyName"]);
+                        $companyNameError= "";
+                    }
+                    //check if email is empty
+                    if (empty($_POST["email"])) {
+                        $emailError = "Email is required";
+                    } 
+                    else {
+                        $email = testData($_POST["email"]);
+                        // validation for email id
+                        $regex = "/^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/";
+                        if (!preg_match($regex,$email)) {
+                            $emailError = "Invalid email format";
+                        }
+                        else
+                        {
+                            $emailError = "";
+                        }   
+                    }
+                    if (empty($_POST["formationDate"])) {
+                        $formationDateError = "Formation Date is required";
+                    }
+                    else {
+                        $formationDate= $_POST["formationDate"];
+                        $formationDateError= "";
+                    }
+                    //check if first name is empty
+                    if (empty($_POST["firstName"])) {
+                        $firstNameError = "First Name is required";
+                    } 
+                    else {
+                        $firstName = testData($_POST["firstName"]);
+                        // validation for first name entered
+                        if (!preg_match("/^[a-zA-Z ]*$/",$firstName)) {
+                            $firstNameError = "Only letters and white space allowed";
+                        }
+                        else {
+                            $firstNameError= "";
+                        }
+                    }
+                    //check if last name is empty
+                     if (empty($_POST["lastName"])) {
+                        $lastNameError = "Last Name is required";
+                    } 
+                    else {
+                        $lastName = testData($_POST["lastName"]);
+                        // validation for last name entered 
+                        if (!preg_match("/^[a-zA-Z ]*$/",$lastName)) {
+                            $lastNameError = "Only letters and white space allowed";
+                        }
+                        else {
+                            $lastNameError = "";
+                        }
+                    }
+                    //check if address is empty
+                    if (empty($_POST["address"])) {
+                        $addressError = "address is required";
+                    } 
+                    else {
+                        $address = testData($_POST["address"]);
+                        if(strlen($address)>255) {
+                            $addressError="Address should be less than 255 characters";
+                        }
+                        else {
+                            $addressError = "";
+                        }
+                    }
+                    //check if city is empty
+                    if (empty($_POST["city"])) {
+                        $cityError = "city is required";
+                    } 
+                    else {
+                        $city = testData($_POST["city"]);
+                        $cityError = "";
+                    }
+                    //check if state is empty
+                    if (empty($_POST["state"])) {
+                        $stateError = "state is required";
+                    } 
+                    else {
+                        $state = testData($_POST["state"]);
+                        $stateError = "";
                     }   
-                }
-                if (empty($_GET["formationDate"])) {
-                    $formationDateError = "Formation Date is required";
-                }
-                else {
-                    $formationDate= $_GET["formationDate"];
-                    $formationDateError= "";
-                }
-                //check if first name is empty
-                if (empty($_GET["firstName"])) {
-                    $firstNameError = "First Name is required";
-                } 
-                else {
-                    $firstName = testData($_GET["firstName"]);
-                    // validation for first name entered
-                    if (!preg_match("/^[a-zA-Z ]*$/",$firstName)) {
-                        $firstNameError = "Only letters and white space allowed";
-                    }
+                    //check if zip code is empty
+                    if (empty($_POST["zipcode"])) {
+                        $zipcodeError = "zip code is required";
+                    } 
                     else {
-                        $firstNameError= "";
+                        $zipcode = testData($_POST["zipcode"]);
+                        if (!preg_match("/^([1-9])([0-9]){5}$/", $zipcode)) { 
+                            $zipcodeError = "Your zip code must be a 6 digit number";
+                        }
+                        else {
+                            $zipcodeError = "";
+                            }
                     }
+                    if($companyIDError==""&& $companyNameError =="" && $formationDateError =="" && $emailError =="" && $firstNameError =="" && $lastNameError == "" && $addressError=="" && $cityError=="" && $stateError=="" && $zipcodeError=="") {                                              
+                        $sql="UPDATE company SET name='$companyName', formation_on='$formationDate', email='$email', firstName='$firstName', lastName='$lastName', ".
+                        "address='$address', city='$city', state='$state', zip='$zipcode' WHERE companyId='$companyID'";
+                        $result=$conn->query($sql); 
+                        if ($result === TRUE) {
+                            $text="Updated successfully";
+                        }
+                        else {
+                            $text="Error while updating";
+                        }
+                    }                    
                 }
-                //check if last name is empty
-                if (empty($_GET["lastName"])) {
-                    $lastNameError = "Last Name is required";
-                } 
-                else {
-                    $lastName = testData($_GET["lastName"]);
-                    // validation for last name entered 
-                    if (!preg_match("/^[a-zA-Z ]*$/",$lastName)) {
-                        $lastNameError = "Only letters and white space allowed";
-                    }
-                    else {
-                        $lastNameError = "";
-                    }
-                }
-                //check if address is empty
-                if (empty($_GET["address"])) {
-                    $addressError = "address is required";
-                } 
-                else {
-                    $address = testData($_GET["address"]);
-                    if(strlen($address)>255) {
-                        $addressError="Address should be less than 255 characters";
-                    }
-                    else {
-                        $addressError = "";
-                    }
-                }
-                //check if city is empty
-                if (empty($_GET["city"])) {
-                    $cityError = "city is required";
-                } 
-                else {
-                    $city = testData($_GET["city"]);
-                    $cityError = "";
-                }
-                //check if state is empty
-                if (empty($_GET["state"])) {
-                    $stateError = "state is required";
-                } 
-                else {
-                    $state = testData($_GET["state"]);
-                    $stateError = "";
-                }   
-                //check if zip code is empty
-                if (empty($_GET["zipcode"])) {
-                    $zipcodeError = "zip code is required";
-                } 
-                else {
-                    $zipcode = testData($_GET["zipcode"]);
-                    if (!preg_match("/^([1-9])([0-9]){5}$/", $zipcode)) { 
-                        $zipcodeError = "Your zip code must be a 6 digit number";
-                    }
-                    else {
-                        $zipcodeError = "";
-                    }
-                }
-                if($companyIDError==""&& $companyNameError =="" && $formationDateError =="" && $emailError =="" && $firstNameError =="" && $lastNameError == "" && $addressError=="" && $cityError=="" && $stateError=="" && $zipcodeError=="") {                                              
-                    $sql="UPDATE company SET name='$companyName', formation_on='$formationDate', email='$email', firstName='$firstName', lastName='$lastName', ".
-                    "address='$address', city='$city', state='$state', zip='$zipcode' WHERE companyId='$companyID'";
-                    $result=$conn->query($sql); 
-                    if ($result === TRUE) {
-                        $text="Updated successfully";
-                    }
-                    else {
-                        $text="Error while updating";
-                    }
-                }                    
-            }   
+            }
             $conn->close();            
             function testData($data) {
                 $data = trim($data);
@@ -182,15 +171,10 @@
         ?>
         <center><h1><b>EDIT COMPANY DETAILS</b></h1></center>        
         <a href="index.php">Home</a>        
-        <form method="get"  id="registrationForm" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" novalidate="novalidate">
+        <form method="post"  id="registrationForm" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF?id=$editid"]);?>" novalidate="novalidate">
             <div id="content" >
                 <table>
                     <tr>
-                        <tr>
-                        <td>Company Id:</td>
-                        <td><input type="text" name="companyID" value="<?php echo $companyID;?>" class="required" readonly/>
-                        </td>
-                    </tr>
                         <td>Company Name:</td>
                         <td><input type="text" name="companyName" value="<?php echo $companyName;?>" class="required"/>
                             <span class="error">*<?php echo $companyNameError;?></span>
